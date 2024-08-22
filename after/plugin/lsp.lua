@@ -35,6 +35,7 @@ require('mason-lspconfig').setup({
   'jsonls',        -- JSON
   'yamlls',        -- YAML
   'bashls',        -- Bash
+  'gopls',         -- GO
   },
   handlers = {
     function(server)
