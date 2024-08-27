@@ -22,12 +22,13 @@ return require('lazy').setup({
     },
 
     {
-        "folke/tokyonight.nvim",
-        opts = { style = "moon" },
+        "tiagovla/tokyodark.nvim",
+        --        "folke/tokyonight.nvim",
+        --        opts = { style = "storm" },
         priority = 1000,
-        name = "tokyonight",
+        name = "tokyodark",
         config = function()
-            vim.cmd [[colorscheme tokyonight]]
+            vim.cmd [[colorscheme tokyodark]]
         end
     },
 
