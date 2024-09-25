@@ -229,6 +229,54 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require("lazy").setup({
+	{ "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
+	{
+		"adalessa/laravel.nvim",
+		dependencies = {
+			"nvim-telescope/telescope.nvim",
+			"tpope/vim-dotenv",
+			"MunifTanjim/nui.nvim",
+			"nvimtools/none-ls.nvim",
+		},
+		cmd = { "Sail", "Artisan", "Composer", "Npm", "Yarn", "Laravel" },
+		keys = {
+			{ "<leader>la", ":Laravel artisan<cr>" },
+			{ "<leader>lr", ":Laravel routes<cr>" },
+			{ "<leader>lm", ":Laravel related<cr>" },
+		},
+		event = { "VeryLazy" },
+		opts = {
+			features = {
+				null_ls = {
+					enable = true,
+				},
+				route_info = {
+					enable = true, --- to enable the laravel.nvim virtual text
+					position = "right", --- where to show the info (available options 'right', 'top')
+					middlewares = true, --- wheather to show the middlewares section in the info
+					method = true, --- wheather to show the method section in the info
+					uri = true, --- wheather to show the uri section in the info
+				},
+			},
+		},
+		config = true,
+	},
+	{
+		"EmranMR/tree-sitter-blade",
+		lazy = false, -- Load immediately
+		config = function()
+			-- Ensure nvim-treesitter is installed
+			require("nvim-treesitter.configs").setup({
+				-- List of parser names, or "all" to load them all
+				ensure_installed = { "blade" },
+
+				-- Enable highlighting
+				highlight = {
+					enable = true,
+				},
+			})
+		end,
+	},
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	{ "akinsho/toggleterm.nvim", version = "*", opts = { open_mapping = [[<c-\>]] } },
@@ -622,7 +670,7 @@ require("lazy").setup({
 				--
 				-- But for many setups, the LSP (`tsserver`) will work just fine
 				-- tsserver = {},
-				--
+				--2
 
 				lua_ls = {
 					-- cmd = {...},
@@ -661,14 +709,13 @@ require("lazy").setup({
 					"lua_ls",
 					"pyright",
 					"ruff_lsp",
-					"tsserver",
+					"ts_ls",
 					"eslint",
 					"tailwindcss",
 					"emmet_language_server",
 					"jsonls",
 				},
 			})
-
 
 			-- automatically install ensure_installed servers
 			require("mason-lspconfig").setup_handlers({
@@ -678,7 +725,7 @@ require("lazy").setup({
 				function(server_name) -- default handler (optional)
 					-- https://github.com/neovim/nvim-lspconfig/pull/3232
 					if server_name == "tsserver" then
---						server_name = "ts_ls"
+						server_name = "ts_ls"
 					end
 					local capabilities = require("cmp_nvim_lsp").default_capabilities()
 					require("lspconfig")[server_name].setup({
@@ -854,13 +901,16 @@ require("lazy").setup({
 		-- change the command in the config to whatever the name of that colorscheme is.
 		--
 		-- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-		"folke/tokyonight.nvim",
+		--		"ferdinandrau/lavish.nvim",
+		--    "miikanissi/modus-themes.nvim",
+		--		"EdenEast/nightfox.nvim",
+		"yorik1984/newpaper.nvim",
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
 			-- Load the colorscheme here.
 			-- Like many other themes, this one has different styles, and you could load
 			-- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-			vim.cmd.colorscheme("tokyonight-night")
+			vim.cmd.colorscheme("newpaper")
 
 			-- You can configure highlights by doing something like:
 			vim.cmd.hi("Comment gui=none")
@@ -975,6 +1025,10 @@ require("lazy").setup({
 	--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
 	--    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
 	-- { import = 'custom.plugins' },
+	{
+		"jwalton512/vim-blade", -- This was archived, check for alternatives
+		lazy = false,
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -999,3 +1053,10 @@ require("lazy").setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+vim.cmd([[
+  augroup blade_filetype
+    autocmd!
+    autocmd BufRead,BufNewFile *.blade.php set filetype=blade
+  augroup END
+]])
